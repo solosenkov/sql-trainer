@@ -1,0 +1,242 @@
+[
+  {
+    "id": 31,
+    "level": 1,
+    "order_in_level": 11,
+    "title": "Товары с нулевым остатком",
+    "theory": "WHERE помогает выделить товары, которые нельзя отгрузить прямо сейчас.",
+    "task_description": "Верните id, name, stock товаров, у которых stock равен нулю. Порядок: id по возрастанию.",
+    "hint": "Нужна таблица products.\nОтфильтруйте stock = 0; выберите только три названных столбца.",
+    "hints": [
+      "Нужна таблица products.",
+      "Отфильтруйте stock = 0; выберите только три названных столбца."
+    ],
+    "expected_sql": "SELECT id, name, stock FROM products WHERE stock = 0 ORDER BY id",
+    "expected_result_description": "Столбцы и порядок строк указаны в условии. Проверяем результат, а не написание запроса.",
+    "is_active": 1
+  },
+  {
+    "id": 32,
+    "level": 1,
+    "order_in_level": 12,
+    "title": "Города без повторов",
+    "theory": "DISTINCT убирает повторяющиеся значения выбранных столбцов.",
+    "task_description": "Верните один столбец city: уникальные города клиентов. Отсортируйте city по возрастанию.",
+    "hint": "Работайте с customers, без JOIN.\nDISTINCT применяется к city, сортировка — ORDER BY city.",
+    "hints": [
+      "Работайте с customers, без JOIN.",
+      "DISTINCT применяется к city, сортировка — ORDER BY city."
+    ],
+    "expected_sql": "SELECT DISTINCT city FROM customers ORDER BY city",
+    "expected_result_description": "Столбцы и порядок строк указаны в условии. Проверяем результат, а не написание запроса.",
+    "is_active": 1
+  },
+  {
+    "id": 33,
+    "level": 1,
+    "order_in_level": 13,
+    "title": "Включённые границы цены",
+    "theory": "BETWEEN включает обе границы.",
+    "task_description": "Верните id, name, price товаров с ценой от 15000 до 50000 включительно, по id.",
+    "hint": "Обе границы должны попасть в результат.\nИспользуйте BETWEEN 15000 AND 50000.",
+    "hints": [
+      "Обе границы должны попасть в результат.",
+      "Используйте BETWEEN 15000 AND 50000."
+    ],
+    "expected_sql": "SELECT id, name, price FROM products WHERE price BETWEEN 15000 AND 50000 ORDER BY id",
+    "expected_result_description": "Столбцы и порядок строк указаны в условии. Проверяем результат, а не написание запроса.",
+    "is_active": 1
+  },
+  {
+    "id": 34,
+    "level": 1,
+    "order_in_level": 14,
+    "title": "Заказы за календарный месяц",
+    "theory": "Даты YYYY-MM-DD можно сравнивать как текст. Полуоткрытый интервал удобен для границ месяца.",
+    "task_description": "Верните id, order_date, customer_name заказов за май 2024 года, по id.",
+    "hint": "Начало периода: 2024-05-01.\nУсловие: дата >= начала и < 2024-06-01.",
+    "hints": [
+      "Начало периода: 2024-05-01.",
+      "Условие: дата >= начала и < 2024-06-01."
+    ],
+    "expected_sql": "SELECT id, order_date, customer_name FROM orders WHERE order_date >= '2024-05-01' AND order_date < '2024-06-01' ORDER BY id",
+    "expected_result_description": "Столбцы и порядок строк указаны в условии. Проверяем результат, а не написание запроса.",
+    "is_active": 1
+  },
+  {
+    "id": 35,
+    "level": 1,
+    "order_in_level": 15,
+    "title": "Домен электронной почты",
+    "theory": "INSTR ищет позицию символа, SUBSTR берёт часть строки.",
+    "task_description": "Для всех клиентов верните id, email, email_domain — часть email после @. Порядок: id.",
+    "hint": "Найдите @ через INSTR(email, '@').\nНачните SUBSTR с позиции @ плюс 1; назовите столбец email_domain.",
+    "hints": [
+      "Найдите @ через INSTR(email, '@').",
+      "Начните SUBSTR с позиции @ плюс 1; назовите столбец email_domain."
+    ],
+    "expected_sql": "SELECT id, email, SUBSTR(email, INSTR(email, '@') + 1) AS email_domain FROM customers ORDER BY id",
+    "expected_result_description": "Столбцы и порядок строк указаны в условии. Проверяем результат, а не написание запроса.",
+    "is_active": 1
+  },
+  {
+    "id": 36,
+    "level": 2,
+    "order_in_level": 13,
+    "title": "Отзывы каждого клиента, включая ноль",
+    "theory": "LEFT JOIN сохраняет клиента без отзывов; COUNT(r.id) не считает пустую присоединённую строку.",
+    "task_description": "Верните c.id, c.name, review_count для всех клиентов. Посчитайте их отзывы, включая 0, по c.id.",
+    "hint": "customers LEFT JOIN reviews по customer_id.\nСчитайте COUNT(r.id), а не COUNT(*); GROUP BY c.id, c.name.",
+    "hints": [
+      "customers LEFT JOIN reviews по customer_id.",
+      "Считайте COUNT(r.id), а не COUNT(*); GROUP BY c.id, c.name."
+    ],
+    "expected_sql": "SELECT c.id, c.name, COUNT(r.id) AS review_count FROM customers c LEFT JOIN reviews r ON r.customer_id = c.id GROUP BY c.id, c.name ORDER BY c.id",
+    "expected_result_description": "Столбцы и порядок строк указаны в условии. Проверяем результат, а не написание запроса.",
+    "is_active": 1
+  },
+  {
+    "id": 37,
+    "level": 2,
+    "order_in_level": 14,
+    "title": "Высоко оценённые товары",
+    "theory": "HAVING отбирает группы по агрегату. Округляйте среднее только при выводе.",
+    "task_description": "Верните p.id, p.name, avg_rating товаров со средней оценкой >= 4.5. Округлите avg_rating до двух знаков, порядок p.id.",
+    "hint": "Соедините products и reviews по product_id.\nУсловие HAVING AVG(r.rating) >= 4.5, вывод ROUND(AVG(...), 2).",
+    "hints": [
+      "Соедините products и reviews по product_id.",
+      "Условие HAVING AVG(r.rating) >= 4.5, вывод ROUND(AVG(...), 2)."
+    ],
+    "expected_sql": "SELECT p.id, p.name, ROUND(AVG(r.rating), 2) AS avg_rating FROM products p JOIN reviews r ON r.product_id = p.id GROUP BY p.id, p.name HAVING AVG(r.rating) >= 4.5 ORDER BY p.id",
+    "expected_result_description": "Столбцы и порядок строк указаны в условии. Проверяем результат, а не написание запроса.",
+    "is_active": 1
+  },
+  {
+    "id": 38,
+    "level": 2,
+    "order_in_level": 15,
+    "title": "Товары без отзывов",
+    "theory": "NOT EXISTS проверяет отсутствие связанных строк.",
+    "task_description": "Верните id, name товаров, для которых ещё нет ни одного отзыва, по id.",
+    "hint": "Отсутствие заказа и отсутствие отзыва — разные проверки.\nСвяжите reviews.product_id с products.id в NOT EXISTS.",
+    "hints": [
+      "Отсутствие заказа и отсутствие отзыва — разные проверки.",
+      "Свяжите reviews.product_id с products.id в NOT EXISTS."
+    ],
+    "expected_sql": "SELECT p.id, p.name FROM products p WHERE NOT EXISTS (SELECT 1 FROM reviews r WHERE r.product_id = p.id) ORDER BY p.id",
+    "expected_result_description": "Столбцы и порядок строк указаны в условии. Проверяем результат, а не написание запроса.",
+    "is_active": 1
+  },
+  {
+    "id": 39,
+    "level": 2,
+    "order_in_level": 16,
+    "title": "Города с несколькими клиентами",
+    "theory": "Группировка нужна по городу, а не по имени клиента.",
+    "task_description": "Верните city, customer_count для городов хотя бы с двумя клиентами. Порядок city.",
+    "hint": "GROUP BY city, COUNT(*).\nHAVING COUNT(*) >= 2.",
+    "hints": [
+      "GROUP BY city, COUNT(*).",
+      "HAVING COUNT(*) >= 2."
+    ],
+    "expected_sql": "SELECT city, COUNT(*) AS customer_count FROM customers GROUP BY city HAVING COUNT(*) >= 2 ORDER BY city",
+    "expected_result_description": "Столбцы и порядок строк указаны в условии. Проверяем результат, а не написание запроса.",
+    "is_active": 1
+  },
+  {
+    "id": 40,
+    "level": 2,
+    "order_in_level": 17,
+    "title": "Выручка по месяцам",
+    "theory": "SUBSTR даты выделяет YYYY-MM, JOIN связывает количество с ценой.",
+    "task_description": "Верните month, revenue по всем месяцам заказов. revenue = SUM(quantity * текущая price), округление до двух знаков; month по возрастанию.",
+    "hint": "Для учебной базы используем текущую каталожную цену; исторической цены в orders нет.\nSUBSTR(order_date,1,7), JOIN products, GROUP BY month.",
+    "hints": [
+      "Для учебной базы используем текущую каталожную цену; исторической цены в orders нет.",
+      "SUBSTR(order_date,1,7), JOIN products, GROUP BY month."
+    ],
+    "expected_sql": "SELECT SUBSTR(o.order_date, 1, 7) AS month, ROUND(SUM(o.quantity * p.price), 2) AS revenue FROM orders o JOIN products p ON p.id = o.product_id GROUP BY SUBSTR(o.order_date, 1, 7) ORDER BY month",
+    "expected_result_description": "Столбцы и порядок строк указаны в условии. Проверяем результат, а не написание запроса.",
+    "is_active": 1
+  },
+  {
+    "id": 41,
+    "level": 3,
+    "order_in_level": 9,
+    "title": "Последний отзыв каждого товара",
+    "theory": "ROW_NUMBER позволяет выбрать одну последнюю строку группы.",
+    "task_description": "Верните product_id, review_id, rating, created_at самого позднего отзыва каждого товара с отзывами. При равной дате побеждает больший review_id. Порядок product_id.",
+    "hint": "CTE: ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY created_at DESC, id DESC).\nВо внешнем запросе оставьте rn = 1; id назовите review_id.",
+    "hints": [
+      "CTE: ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY created_at DESC, id DESC).",
+      "Во внешнем запросе оставьте rn = 1; id назовите review_id."
+    ],
+    "expected_sql": "WITH ranked AS (SELECT product_id, id AS review_id, rating, created_at, ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY created_at DESC, id DESC) AS rn FROM reviews) SELECT product_id, review_id, rating, created_at FROM ranked WHERE rn = 1 ORDER BY product_id",
+    "expected_result_description": "Столбцы и порядок строк указаны в условии. Проверяем результат, а не написание запроса.",
+    "is_active": 1
+  },
+  {
+    "id": 42,
+    "level": 3,
+    "order_in_level": 10,
+    "title": "Заказы и отзывы без умножения строк",
+    "theory": "Две связи один-ко-многим лучше агрегировать до соединения.",
+    "task_description": "Верните c.id, c.name, order_count, review_count для всех клиентов. Заказ считается строкой orders, отзыв — строкой reviews. Пустые счётчики замените на 0, порядок c.id.",
+    "hint": "Не соединяйте сырые orders и reviews одновременно: получите произведение строк.\nАгрегируйте orders по customer_name и reviews по customer_id отдельно; затем два LEFT JOIN.",
+    "hints": [
+      "Не соединяйте сырые orders и reviews одновременно: получите произведение строк.",
+      "Агрегируйте orders по customer_name и reviews по customer_id отдельно; затем два LEFT JOIN."
+    ],
+    "expected_sql": "WITH oc AS (SELECT customer_name, COUNT(*) AS n FROM orders GROUP BY customer_name), rc AS (SELECT customer_id, COUNT(*) AS n FROM reviews GROUP BY customer_id) SELECT c.id, c.name, COALESCE(oc.n, 0) AS order_count, COALESCE(rc.n, 0) AS review_count FROM customers c LEFT JOIN oc ON oc.customer_name = c.name LEFT JOIN rc ON rc.customer_id = c.id ORDER BY c.id",
+    "expected_result_description": "Столбцы и порядок строк указаны в условии. Проверяем результат, а не написание запроса.",
+    "is_active": 1
+  },
+  {
+    "id": 43,
+    "level": 3,
+    "order_in_level": 11,
+    "title": "Сравнить зарплату с предыдущим наймом",
+    "theory": "LAG читает значение предыдущей строки окна; первая строка имеет NULL.",
+    "task_description": "Верните id, name, department, salary, previous_salary, salary_delta. Сравнивайте с сотрудником, нанятым перед текущим в том же отделе, порядок окна hire_date, id. Итог отсортируйте по id. У первого previous_salary и salary_delta = NULL.",
+    "hint": "LAG(salary) OVER (PARTITION BY department ORDER BY hire_date, id).\nsalary_delta = salary - previous_salary. Для удобства используйте CTE.",
+    "hints": [
+      "LAG(salary) OVER (PARTITION BY department ORDER BY hire_date, id).",
+      "salary_delta = salary - previous_salary. Для удобства используйте CTE."
+    ],
+    "expected_sql": "WITH s AS (SELECT id, name, department, salary, LAG(salary) OVER (PARTITION BY department ORDER BY hire_date, id) AS previous_salary FROM employees) SELECT id, name, department, salary, previous_salary, salary - previous_salary AS salary_delta FROM s ORDER BY id",
+    "expected_result_description": "Столбцы и порядок строк указаны в условии. Проверяем результат, а не написание запроса.",
+    "is_active": 1
+  },
+  {
+    "id": 44,
+    "level": 3,
+    "order_in_level": 12,
+    "title": "Лидер категории по отзывам",
+    "theory": "Сначала агрегируйте оценки товара, затем ранжируйте внутри категории.",
+    "task_description": "Верните category, product_id, name, avg_rating: один товар с наибольшей средней оценкой в каждой категории. Участвуют только товары с отзывами. При равенстве побеждает меньший product_id. avg_rating округлите до двух знаков только в выводе. Порядок category.",
+    "hint": "CTE для AVG по товару; второй CTE для ROW_NUMBER по категории.\nСортируйте окно по неокруглённому среднему DESC, id ASC; затем rn=1.",
+    "hints": [
+      "CTE для AVG по товару; второй CTE для ROW_NUMBER по категории.",
+      "Сортируйте окно по неокруглённому среднему DESC, id ASC; затем rn=1."
+    ],
+    "expected_sql": "WITH ratings AS (SELECT p.id AS product_id, p.name, p.category, AVG(r.rating) AS avg_rating FROM products p JOIN reviews r ON r.product_id = p.id GROUP BY p.id, p.name, p.category), ranked AS (SELECT *, ROW_NUMBER() OVER (PARTITION BY category ORDER BY avg_rating DESC, product_id) AS rn FROM ratings) SELECT category, product_id, name, ROUND(avg_rating, 2) AS avg_rating FROM ranked WHERE rn = 1 ORDER BY category",
+    "expected_result_description": "Столбцы и порядок строк указаны в условии. Проверяем результат, а не написание запроса.",
+    "is_active": 1
+  },
+  {
+    "id": 45,
+    "level": 3,
+    "order_in_level": 13,
+    "title": "Купили, но не оставили отзыв",
+    "theory": "NOT EXISTS может учитывать пару клиент–товар.",
+    "task_description": "Верните customer_id, customer_name, product_id, product_name для уникальных пар клиент–купленный товар, если клиент не оставил отзыв именно на этот товар. Порядок customer_id, product_id.",
+    "hint": "Соедините customers.name с orders.customer_name; имена в этой учебной базе уникальны.\nNOT EXISTS по reviews.customer_id и reviews.product_id; повторные покупки уберите DISTINCT.",
+    "hints": [
+      "Соедините customers.name с orders.customer_name; имена в этой учебной базе уникальны.",
+      "NOT EXISTS по reviews.customer_id и reviews.product_id; повторные покупки уберите DISTINCT."
+    ],
+    "expected_sql": "SELECT DISTINCT c.id AS customer_id, c.name AS customer_name, p.id AS product_id, p.name AS product_name FROM customers c JOIN orders o ON o.customer_name = c.name JOIN products p ON p.id = o.product_id WHERE NOT EXISTS (SELECT 1 FROM reviews r WHERE r.customer_id = c.id AND r.product_id = p.id) ORDER BY customer_id, product_id",
+    "expected_result_description": "Столбцы и порядок строк указаны в условии. Проверяем результат, а не написание запроса.",
+    "is_active": 1
+  }
+]

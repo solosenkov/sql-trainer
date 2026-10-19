@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL-тренажёр — выучи SQL играючи</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Спрайт кастомных SVG-иконок (штрих 2px, круглые концы — в духе Duolingo) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="16" rx="4"/>
+        <path d="M7 9.5l3 3-3 3"/>
+        <path d="M12.5 15.5H17"/>
+      </symbol>
+      <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="7"/>
+        <path d="M21 21l-4.5-4.5"/>
+      </symbol>
+      <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+      </symbol>
+      <symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 18l6-6-6-6"/>
+        <path d="M8 6l-6 6 6 6"/>
+      </symbol>
+      <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+      </symbol>
+      <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="9"/>
+        <circle cx="12" cy="12" r="5"/>
+        <circle cx="12" cy="12" r="1.2" fill="currentColor"/>
+      </symbol>
+      <symbol id="i-db" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <ellipse cx="12" cy="5" rx="8" ry="3"/>
+        <path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/>
+        <path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/>
+      </symbol>
+      <symbol id="i-keyboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="6" width="20" height="12" rx="2"/>
+        <path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M18 14h.01M9 14h6"/>
+      </symbol>
+      <symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+        <path d="M4 22v-7"/>
+      </symbol>
+      <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6L9 17l-5-5"/>
+      </symbol>
+      <symbol id="i-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M8.5 12.5l2.5 2.5 4.5-5.5"/>
+      </symbol>
+      <symbol id="i-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="8"/>
+      </symbol>
+      <symbol id="i-x-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M9 9l6 6M15 9l-6 6"/>
+      </symbol>
+      <symbol id="i-bulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 18h6"/>
+        <path d="M10 21h4"/>
+        <path d="M12 3a6 6 0 0 0-3.5 10.9c.8.6 1.5 1.5 1.5 2.6V17h4v-.5c0-1.1.7-2 1.5-2.6A6 6 0 0 0 12 3z"/>
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14"/>
+        <path d="M13 6l6 6-6 6"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- Верхняя навигация -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <button class="logo" data-nav="home" type="button"><svg class="ic logo-ic"><use href="#i-logo"/></svg> SQL-тренажёр</button>
+      <nav class="topnav">
+        <button class="nav-link" data-nav="home" type="button">Главная</button>
+        <button class="nav-link" data-nav="trainer" type="button">Задания</button>
+        <button class="nav-link" data-nav="queries" type="button">Запросы</button>
+        <span id="nav-progress" class="progress-pill" title="Ваш прогресс">0/45</span>
+        <button class="btn btn-green btn-sm" data-nav="trainer" type="button">Начать учиться</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <div id="connection-error" class="error-banner" hidden></div>
+
+    <!-- СТРАНИЦА 1: презентация проекта -->
+    <div id="screen-home" class="screen">
+      <section class="hero">
+        <div class="hero-text">
+          <span class="sticker">Бесплатно • локально • на русском</span>
+          <h1>Выучи SQL <span class="green">играючи</span></h1>
+          <p class="lead">45 заданий от простого <b>SELECT</b> до оконных функций.
+            Пиши настоящие запросы к живой базе, получай зачёт за верные ответы —
+            как в игре, только по-настоящему.</p>
+          <div class="hero-cta">
+            <button class="btn btn-green" data-nav="trainer" type="button">Начать с задания 1</button>
+            <a class="btn btn-outline" href="#how">Как это устроено</a>
+          </div>
+          <div class="hero-progress">
+            <div class="progress-bar"><div id="hero-progress-fill" class="progress-fill"></div></div>
+            <span id="hero-progress-text">Выполнено 0 из 45</span>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <!-- Маскот: окошко терминала с запросом и бейджем «верно» -->
+          <svg class="mascot" viewBox="0 0 260 240" role="img">
+            <ellipse cx="125" cy="214" rx="95" ry="12" fill="#e5e5e5"/>
+            <rect x="20" y="14" width="210" height="180" rx="16" fill="#ffffff" stroke="#4b4b4b" stroke-width="4"/>
+            <path d="M20 52h210" stroke="#4b4b4b" stroke-width="4"/>
+            <circle cx="42" cy="33" r="7" fill="#58cc02"/>
+            <circle cx="62" cy="33" r="7" fill="#1cb0f6"/>
+            <circle cx="82" cy="33" r="7" fill="#ffc800"/>
+            <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="17" font-weight="bold">
+              <text x="40" y="90" fill="#58cc02">SELECT</text>
+              <text x="116" y="90" fill="#4b4b4b">*;</text>
+              <text x="40" y="122" fill="#1cb0f6">FROM</text>
+              <text x="88" y="122" fill="#4b4b4b">products;</text>
+              <text x="40" y="154" fill="#1cb0f6">WHERE</text>
+              <text x="104" y="154" fill="#4b4b4b">price &gt;</text>
+              <text x="182" y="154" fill="#9b51e0">20000;</text>
+            </g>
+            <circle cx="212" cy="176" r="30" fill="#58cc02" stroke="#ffffff" stroke-width="7"/>
+            <path d="M199 176l9 9 17-18" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="float-chip chip-1"><svg class="ic"><use href="#i-code"/></svg> SELECT *</span>
+          <span class="float-chip chip-2"><svg class="ic"><use href="#i-check"/></svg> Верно!</span>
+          <span class="float-chip chip-3"><svg class="ic"><use href="#i-link"/></svg> JOIN</span>
+        </div>
+      </section>
+
+      <section id="how" class="section">
+        <h2>Как это работает</h2>
+        <p class="section-sub">Три шага — и ты на шаг ближе к офферу аналитика</p>
+        <div class="steps">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <h3><svg class="ic"><use href="#i-book"/></svg> Читай теорию</h3>
+            <p>Каждое задание начинается с короткого объяснения — 2–4 предложения, без воды.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <h3><svg class="ic"><use href="#i-keyboard"/></svg> Пиши запрос</h3>
+            <p>Умный редактор подсвечивает синтаксис и подсказывает команды, таблицы и колонки.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <h3><svg class="ic"><use href="#i-check-circle"/></svg> Получай результат</h3>
+            <p>Сервер выполняет запрос на настоящей SQLite-базе и честно сравнивает с эталоном.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Три уровня — от новичка до героя</h2>
+        <p class="section-sub">Нажми на уровень, чтобы увидеть его задания</p>
+        <div id="levels-preview" class="levels"></div>
+      </section>
+
+      <section class="section">
+        <h2>Наша база данных</h2>
+        <p class="section-sub" id="schema-summary">Загружаем таблицы…</p>
+        <div id="schema-cards" class="schema-cards"></div>
+      </section>
+
+      <section class="cta-band">
+        <h2>Готов написать первый SELECT?</h2>
+        <p>Это займёт 30 секунд. Честно.</p>
+        <button class="btn btn-white" data-nav="trainer" type="button">Погнали! <svg class="ic"><use href="#i-arrow"/></svg></button>
+      </section>
+    </div>
+
+    <section id="screen-queries" class="screen" hidden>
+      <h1>Запросы</h1><p>Свободная работа с учебной SQLite-базой. Только SELECT / WITH, результат до 100 строк. Данные не меняются.</p>
+      <details><summary>Таблицы и столбцы</summary><pre id="free-schema" style="white-space:pre-wrap">Загружаем схему…</pre></details>
+      <label for="free-sql">Ваш SQL-запрос</label><textarea id="free-sql" rows="10" spellcheck="false" style="width:100%;box-sizing:border-box;font:15px/1.6 monospace;padding:16px;border:2px solid #d8d8d8;border-radius:12px">SELECT id, name, price FROM products ORDER BY id;</textarea>
+      <button id="run-free-query" class="btn btn-green" type="button">Выполнить запрос</button>
+      <div id="free-result" role="status" style="margin-top:24px;overflow:auto"></div>
+    </section>
+    <!-- СТРАНИЦА 2: тренажёр (уровни) -->
+    <div id="screen-levels" class="screen" hidden>
+      <h2 class="screen-title">Выбери уровень</h2>
+      <p class="section-sub" id="levels-progress-text">Выполнено 0 из 45</p>
+      <div id="levels-list" class="levels"></div>
+    </div>
+
+    <!-- СТРАНИЦА 2: список заданий уровня -->
+    <div id="screen-tasks" class="screen" hidden>
+      <h2 id="tasks-title" class="screen-title">Задания</h2>
+      <div id="tasks-list" class="tasks"></div>
+      <button id="btn-back-levels" class="btn btn-outline" type="button">← К уровням</button>
+    </div>
+
+    <!-- СТРАНИЦА 2: задание -->
+    <div id="screen-exercise" class="screen" hidden>
+      <h2 id="exercise-title" class="screen-title">Задание</h2>
+      <section class="card">
+        <h3><svg class="ic"><use href="#i-book"/></svg> Теория</h3>
+        <p id="exercise-theory"></p>
+      </section>
+      <section class="card">
+        <h3><svg class="ic"><use href="#i-target"/></svg> Задача</h3>
+        <p id="exercise-task"></p>
+      </section>
+      <section class="card">
+        <h3><svg class="ic"><use href="#i-db"/></svg> Схема таблиц</h3>
+        <div id="exercise-schema"></div>
+      </section>
+      <section class="card">
+        <h3><svg class="ic"><use href="#i-keyboard"/></svg> Ваш запрос</h3>
+        <div class="editor-shell" id="editor-shell">
+          <pre class="editor-layer" aria-hidden="true"><code id="editor-code"></code></pre>
+          <textarea id="sql-editor" class="editor-input" spellcheck="false" autocomplete="off"
+            autocapitalize="off" placeholder="SELECT * FROM products;"></textarea>
+          <div id="autocomplete" class="autocomplete" hidden></div>
+        </div>
+        <p class="editor-tip"><svg class="ic"><use href="#i-bulb"/></svg> Начните вводить: <b>sel</b> → SELECT, <b>fr</b> → FROM. Выбор — Tab или Enter, проверка — Ctrl+Enter.</p>
+        <div class="btn-row">
+          <button id="btn-check" class="btn btn-green" type="button">Проверить запрос</button>
+          <button id="btn-hint" class="btn btn-outline" type="button">Показать подсказку</button>
+          <button id="btn-answer" class="btn btn-outline" type="button">Показать ответ</button>
+        </div>
+        <div id="hint-block" class="hint" hidden>
+          <strong>Подсказка:</strong>
+          <p id="hint-text"></p>
+        </div>
+        <div id="answer-block" class="answer" hidden>
+          <strong>Эталонный запрос:</strong>
+          <pre class="answer-sql"><code id="answer-sql"></code></pre>
+          <p id="answer-description"></p>
+        </div>
+      </section>
+      <section class="card">
+        <h3><svg class="ic"><use href="#i-flag"/></svg> Результат</h3>
+        <div id="result" class="result result-empty">Нажмите «Проверить запрос», чтобы увидеть результат.</div>
+      </section>
+      <div class="btn-row nav-row">
+        <button id="btn-back-tasks" class="btn btn-outline" type="button">← К списку</button>
+        <div class="prev-next">
+          <button id="btn-prev" class="btn btn-outline" type="button">← Предыдущее</button>
+          <button id="btn-next" class="btn btn-outline" type="button">Следующее →</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer-band">
+    <div class="footer-inner">
+      <div>
+        <b><svg class="ic"><use href="#i-logo"/></svg> SQL-тренажёр</b>
+        <span>45 заданий • SQLite • прогресс хранится в вашем браузере</span>
+      </div>
+      <button id="btn-reset" class="btn btn-white-outline" type="button">Сбросить прогресс</button>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

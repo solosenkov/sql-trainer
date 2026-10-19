@@ -1,0 +1,13 @@
+name = "sql-trainer"
+pages_build_output_dir = "./frontend"
+compatibility_date = "2026-09-17"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "sql-trainer-db"
+database_id = "b92b227d-9ed0-4c6b-b389-915d8ca28c2b"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "sql-trainer-db"
+database_id = "b92b227d-9ed0-4c6b-b389-915d8ca28c2b"

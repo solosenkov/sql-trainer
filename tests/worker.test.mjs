@@ -1,0 +1,15 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {execFileSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+import {readFileSync} from 'node:fs';
+import worker from '../frontend/_worker.js';
+const root=fileURLToPath(new URL('../',import.meta.url));
+const additional=JSON.parse(readFileSync(root+'db/additional-exercises.json','utf8'));
+function run(sql,params=[]){return JSON.parse(execFileSync('python3',[root+'tests/query-db.py',root+'db/trainer.db'],{input:JSON.stringify({sql,params}),encoding:'utf8'}));}
+const DB={prepare(sql){return{params:[],bind(...params){this.params=params;return this;},async raw(){const x=run(sql,this.params);return [x.columns,...x.rows];},async all(){const x=run(sql,this.params);return{results:x.rows.map(r=>Object.fromEntries(x.columns.map((c,i)=>[c,r[i]])))};},async first(){const x=run(sql,this.params);return x.rows[0]?Object.fromEntries(x.columns.map((c,i)=>[c,x.rows[0][i]])):null;}};}};
+async function call(path,body){const response=await worker.fetch(new Request('https://test.example'+path,{method:body?'POST':'GET',...(body?{headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{})}),{DB,ASSETS:{fetch:()=>new Response('not found',{status:404})}});return{status:response.status,body:await response.json()};}
+test('45 эталонов реально выполняются и принимаются проверкой worker',async()=>{const ex=run('SELECT id,expected_sql FROM exercises ORDER BY id').rows;assert.equal(ex.length,45);for(const [id,sql]of ex){const x=await call('/api/check',{exercise_id:id,sql});assert.equal(x.body.success,true,`#${id}: ${x.body.message}`);}});
+test('новые задания и уровни сохранены; принимается другой правильный SQL',async()=>{assert.equal(additional.length,15);const levels=await call('/api/levels');assert.deepEqual(levels.body.map(x=>x.count),[15,17,13]);assert.equal((await call('/api/check',{exercise_id:31,sql:'SELECT id, name, stock FROM products WHERE stock <= 0 ORDER BY id'})).body.success,true);assert.equal((await call('/api/check',{exercise_id:32,sql:'SELECT DISTINCT city FROM customers ORDER BY city DESC'})).body.success,false);});
+test('свободные запросы: пустой ответ, литералы и ограничение размера результата',async()=>{let x=await call('/api/query',{sql:'SELECT id FROM products WHERE 0'});assert.equal(x.body.success,true);assert.deepEqual(x.body.columns,['id']);assert.deepEqual(x.body.rows,[]);x=await call('/api/query',{sql:"SELECT 'drop;delete' AS text"});assert.equal(x.body.rows[0][0],'drop;delete');x=await call('/api/query',{sql:'SELECT p.id FROM products p CROSS JOIN orders o'});assert.equal(x.body.rows.length,100);assert.equal(x.body.truncated,true);});
+test('изменения, несколько команд и рекурсия отклоняются; данные прежние',async()=>{const before=run('SELECT COUNT(*) FROM products').rows;for(const sql of ['DELETE FROM products','SELECT 1; DROP TABLE products','WITH RECURSIVE x AS (SELECT 1 UNION ALL SELECT 1 FROM x) SELECT * FROM x'])assert.equal((await call('/api/query',{sql})).body.success,false);assert.deepEqual(run('SELECT COUNT(*) FROM products').rows,before);});

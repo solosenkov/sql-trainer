@@ -1,0 +1,10 @@
+.wrangler/
+__pycache__/
+*.pyc
+*.db
+*.db-*
+.env*
+backups/
+node_modules/
+LOCAL-PROMPT.md
+sql-trainer-lovable-prompt.md
