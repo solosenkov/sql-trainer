@@ -11,6 +11,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .footer-community { margin: 12px 0 0; max-width: 48rem; font-size: 15px; line-height: 1.6; font-weight: 500; color: var(--color-night-ink); }
+    .footer-community a { color: inherit; text-decoration: underline; text-underline-offset: 4px; white-space: nowrap; font-weight: 700; }
+    .footer-community a:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; border-radius: 2px; }
+  </style>
 </head>
 <body>
   <!-- Спрайт кастомных SVG-иконок (штрих 2px, круглые концы — в духе Duolingo) -->
@@ -263,6 +268,10 @@
       <div>
         <b><svg class="ic"><use href="#i-logo"/></svg> SQL-тренажёр</b>
         <span>45 заданий • SQLite • прогресс хранится в вашем браузере</span>
+        <p class="footer-community">
+          Проект <a href="https://qartel.net" target="_blank" rel="noopener noreferrer">QArtel</a> — мировые QA-новости на русском и база знаний QA.
+          <a href="https://t.me/qartel_qa" target="_blank" rel="noopener noreferrer">Канал в Telegram ↗</a>
+        </p>
       </div>
       <button id="btn-reset" class="btn btn-white-outline" type="button">Сбросить прогресс</button>
     </div>
